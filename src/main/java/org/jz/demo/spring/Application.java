@@ -30,6 +30,5 @@ public class Application {
     public void aa() {
         List<FileDO> fileDOS = fileMapper.selectList(new LambdaQueryWrapper<>());
         System.out.println(fileDOS);
-
     }
 }
