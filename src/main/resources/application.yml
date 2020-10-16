@@ -1,19 +1,6 @@
 spring:
   profiles:
     active: dev
-  datasource:
-    druid:
-      initial-size: 5
-      min-idle: 5
-      max-active: 15
-      max-wait: 5000
-      timeBetweenEvictionRunsMillis: 60000
-      minEvictableIdleTimeMillis: 1800000
-      validationQuery: SELECT 'x'
-      testWhileIdle: true
-      testOnBorrow: false
-      testOnReturn: false
-      poolPreparedStatements: false
   application:
     name: demo
 
