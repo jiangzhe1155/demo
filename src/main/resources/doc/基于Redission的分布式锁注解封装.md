@@ -9,3 +9,6 @@
 4. 注解形式，添加到方法上。锁随着方法结束而释放。
 
 ## 使用示例
+[实现代码](https://github.com/jiangzhe1155/demo/tree/master/src/main/java/org/jz/demo/spring/distributedLock)
+
+[测试用例](https://github.com/jiangzhe1155/demo/tree/master/src/test/java/org/jz/demo/spring/distributedLock)
