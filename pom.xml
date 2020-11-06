@@ -18,6 +18,7 @@
         <java.version>1.8</java.version>
         <mybatis-plus.version>3.3.2</mybatis-plus.version>
         <redission.version>3.13.1</redission.version>
+        <dynamic-datasource-spring-boot-starter.version>3.1.1</dynamic-datasource-spring-boot-starter.version>
     </properties>
 
     <dependencies>
@@ -38,6 +39,16 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.shardingsphere</groupId>
+            <artifactId>sharding-jdbc-spring-boot-starter</artifactId>
+            <version>4.0.0-RC2</version>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.shardingsphere</groupId>-->
+<!--            <artifactId>sharding-jdbc-spring-namespace</artifactId>-->
+<!--            <version>4.0.0-RC2</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -60,12 +71,12 @@
             <version>${mybatis-plus.version}</version>
         </dependency>
 
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
-
     </dependencies>
 
     <build>

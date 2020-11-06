@@ -4,14 +4,16 @@ package org.jz.demo.spring.deadlock;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
 
+@ActiveProfiles("dev")
 @SpringBootTest
 class DeadLockDemoTest {
 
     @Autowired
-    DeadLockDemo.UserAmountServiceImpl userAmountService;
+    UserAmountServiceImpl userAmountService;
 
     @Test
     public void deadLockTest() throws InterruptedException {
@@ -19,11 +21,11 @@ class DeadLockDemoTest {
         //初始化
         userAmountService.remove(null);
         userAmountService.saveBatch(Arrays.asList(
-                new DeadLockDemo.UserAmount().setUserId(5).setAmount(5),
-                new DeadLockDemo.UserAmount().setUserId(10).setAmount(5),
-                new DeadLockDemo.UserAmount().setUserId(15).setAmount(5),
-                new DeadLockDemo.UserAmount().setUserId(20).setAmount(5),
-                new DeadLockDemo.UserAmount().setUserId(25).setAmount(5)));
+                new UserAmount().setUserId(5).setAmount(5),
+                new UserAmount().setUserId(10).setAmount(5),
+                new UserAmount().setUserId(15).setAmount(5),
+                new UserAmount().setUserId(20).setAmount(5),
+                new UserAmount().setUserId(25).setAmount(5)));
 
 
         // 邀请人10 通过 被邀请人7 得到奖励
