@@ -1,4 +1,4 @@
-package org.jz.demo.spring.deadlock;
+package org.jz.demo.spring.couponBus;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -8,6 +8,6 @@ import org.apache.ibatis.annotations.Mapper;
  * @date 2020/11/06
  */
 @Mapper
-public interface UserAmountMapper extends BaseMapper<UserAmount> {
+public interface CouponAccountMapper extends BaseMapper<CouponAccount> {
 
 }

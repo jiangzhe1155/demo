@@ -12,8 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author jz
  * @date 2020/10/23
  */
-
-
 @Slf4j
 @Service
 public class UserAmountServiceImpl extends ServiceImpl<UserAmountMapper, UserAmount> {
