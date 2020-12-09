@@ -1,4 +1,4 @@
-package org.jz.demo.spring.couponBus;
+package org.jz.demo.spring.shardingJdbc;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;

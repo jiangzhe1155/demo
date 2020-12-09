@@ -1,9 +1,10 @@
-package org.jz.demo.spring.couponBus;
+package org.jz.demo.spring.shardingJdbc;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2020/11/04
  * 基础红包服务
  */
+@Slf4j
 @Service
 public class BaseCouponServiceImpl {
 
@@ -38,7 +40,6 @@ public class BaseCouponServiceImpl {
         return couponAccounts;
     }
 
-
     // 发送红包
     public Integer sendCoupon(Integer userId, Integer couponCfgId) throws JsonProcessingException {
         // 插入一条领取红包记录
@@ -46,17 +47,17 @@ public class BaseCouponServiceImpl {
         if (couponCfg == null) {
             return null;
         }
+        couponCfg.setDeduceAmount(couponCfg.getDeduceAmount() + 1);
+        couponCfgMapper.updateById(couponCfg);
 
         CouponAccount couponAccount =
                 new CouponAccount().setUserId(userId).setStatus(0).setCouponCfg(objectMapper.writeValueAsString(couponCfg));
-        int success =
-                couponAccountMapper.insert(couponAccount);
+        int success = couponAccountMapper.insert(couponAccount);
         if (success <= 0) {
             return null;
         }
 
         return couponAccount.getId();
-
     }
 
     // 使用红包

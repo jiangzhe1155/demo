@@ -10,5 +10,3 @@ mybatis-plus:
   type-enums-package: org.jz.demo.spring.enums
 
 
-
-

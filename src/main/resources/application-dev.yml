@@ -2,7 +2,6 @@ spring:
   redis:
     host: 172.16.1.16
     database: 6
-
   shardingsphere:
     datasource:
       names: ds0,ds1

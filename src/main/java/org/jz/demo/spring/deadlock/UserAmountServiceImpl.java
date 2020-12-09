@@ -20,13 +20,11 @@ public class UserAmountServiceImpl extends ServiceImpl<UserAmountMapper, UserAmo
     @Transactional(rollbackFor = Exception.class)
     public void updateAmountAndInsert(Integer inviter, Integer invitee) throws InterruptedException {
         log.info("当前线程 {}", Thread.currentThread().getName());
-
-        //给邀请人发放金币奖励
+        // 给邀请人发放金币奖励
         update(new LambdaUpdateWrapper<UserAmount>()
                 .eq(UserAmount::getUserId, inviter)
                 .setSql("`amount` = `amount` + 1"));
-
-        //休眠十秒，强制触发死锁
+        // 休眠十秒，强制触发死锁
         Thread.sleep(10000);
 
         // 同时给被邀请人发放奖励

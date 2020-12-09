@@ -1,4 +1,4 @@
-package org.jz.demo.spring.couponBus;
+package org.jz.demo.spring.shardingJdbc;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -8,7 +8,6 @@ import org.apache.ibatis.annotations.Mapper;
  * @date 2020/11/06
  */
 @Mapper
-public interface CouponCfgMapper extends BaseMapper<CouponCfg> {
+public interface CouponAccountMapper extends BaseMapper<CouponAccount> {
 
 }
-
