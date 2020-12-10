@@ -1,13 +1,15 @@
 package org.jz.demo.mapreduce;
 
+import ch.qos.logback.core.encoder.EchoEncoder;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.DelimiterBasedFrameDecoder;
+import io.netty.handler.codec.LineBasedFrameDecoder;
+import io.netty.handler.codec.json.JsonObjectDecoder;
+import io.netty.handler.codec.string.StringDecoder;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -36,9 +38,14 @@ public class Master {
             ServerBootstrap b = new ServerBootstrap(); // (2)
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class) // (3)
+                    .localAddress(9999)
                     .childHandler(new ChannelInitializer<SocketChannel>() { // (4)
                         @Override
                         public void initChannel(SocketChannel ch) {
+                            ch.pipeline().addLast(new JsonObjectDecoder());
+//                            ch.pipeline().addLast(new LineBasedFrameDecoder(1024));
+                            ch.pipeline().addLast(new StringDecoder());
+
                             ch.pipeline().addLast(new DiscardServerHandler());
                         }
                     })
@@ -46,7 +53,7 @@ public class Master {
                     .childOption(ChannelOption.SO_KEEPALIVE, true); // (6)
 
             // Bind and start to accept incoming connections.
-            ChannelFuture f = b.bind(port).sync(); // (7)
+            ChannelFuture f = b.bind().sync(); // (7)
 
             // Wait until the server socket is closed.
             // In this example, this does not happen, but you can do that to gracefully
@@ -67,41 +74,6 @@ public class Master {
             }
         });
         thread.start();
-
-        Thread thread1 = new Thread(() -> {
-            try {
-                java.nio.channels.SocketChannel open = java.nio.channels.SocketChannel.open();
-                open.connect(new InetSocketAddress(9999));
-                Socket socket = open.socket();
-
-                OutputStream outputStream = socket.getOutputStream();
-                Writer writer = new OutputStreamWriter(outputStream);
-                writer.write("AA");
-                writer.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        });
-
-        Thread thread2 = new Thread(() -> {
-            try {
-                java.nio.channels.SocketChannel open = java.nio.channels.SocketChannel.open();
-                open.connect(new InetSocketAddress(9999));
-                Socket socket = open.socket();
-
-                OutputStream outputStream = socket.getOutputStream();
-                Writer writer = new OutputStreamWriter(outputStream);
-                writer.write("BBBB");
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        });
-
-        thread1.start();
-        thread2.start();
     }
 
 }
