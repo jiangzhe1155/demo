@@ -1,4 +1,4 @@
-package org.jz.demo.spring.couponBus;
+package org.jz.demo.spring.shardingJdbc;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -24,7 +24,7 @@ class CouponBusDemoTest {
 
         // 发送红包
         Integer couponId = couponService.sendCoupon(userId, couponCfgId);
-
+//        int i = 1 / 0;
         //使用红包
         couponService.useCoupon(userId, couponId);
 
