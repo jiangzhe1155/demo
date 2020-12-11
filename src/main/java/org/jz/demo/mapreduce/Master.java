@@ -45,7 +45,6 @@ public class Master {
                             ch.pipeline().addLast(new JsonObjectDecoder());
 //                            ch.pipeline().addLast(new LineBasedFrameDecoder(1024));
                             ch.pipeline().addLast(new StringDecoder());
-
                             ch.pipeline().addLast(new DiscardServerHandler());
                         }
                     })
