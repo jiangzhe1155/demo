@@ -5,20 +5,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.ByteToMessageCodec;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
-import io.netty.handler.codec.json.JsonObjectDecoder;
-import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
-import org.jz.demo.mapreduce.DiscardServerHandler;
 import org.jz.demo.mapreduce.Response;
 
 import java.net.InetSocketAddress;
@@ -75,9 +70,12 @@ public class Test {
                     ch.pipeline().addLast(new StringDecoder());
                     ch.pipeline().addLast(new StringEncoder());
                     ch.pipeline().addLast(new SimpleChannelInboundHandler<String>() {
+
                         @Override
-                        protected void channelRead0(ChannelHandlerContext ctx, String msg) {
+                        protected void channelRead0(ChannelHandlerContext ctx, String msg) throws JsonProcessingException {
                             System.out.println(StrUtil.format("客户端接收到服务器的回复  {}", msg));
+                            Response response = objectMapper.readValue(msg, Response.class);
+                            System.out.println("客户端处理完成");
                         }
 
                         @Override
