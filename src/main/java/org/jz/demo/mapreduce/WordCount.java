@@ -37,6 +37,5 @@ public class WordCount implements MapReduce<Integer> {
         String filepath = args[0];
         WordCount wordCount = new WordCount();
         List<KeyValue<String, Integer>> map = wordCount.map(filepath);
-        System.out.println(map);
     }
 }

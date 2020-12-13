@@ -9,5 +9,12 @@ import lombok.Data;
 @Data
 public class Response {
 
-    private int aa;
+    public static final int MAP_TASK = 1;
+    public static final int REDUCE_TASK = 2;
+
+    private int taskType;
+
+    private TaskObject taskObject;
+
+    private boolean isDone;
 }
