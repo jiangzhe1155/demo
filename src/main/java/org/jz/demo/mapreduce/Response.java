@@ -17,4 +17,6 @@ public class Response {
     private TaskObject taskObject;
 
     private boolean isDone;
+
+    private int nReduce;
 }

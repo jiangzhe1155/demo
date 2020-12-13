@@ -11,12 +11,15 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.bytes.ByteArrayDecoder;
 import io.netty.handler.codec.bytes.ByteArrayEncoder;
+import org.apache.commons.collections4.KeyValue;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * @author jz
@@ -28,18 +31,20 @@ public class Worker {
         // 开启一个工作线程，监听指定的端口
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Bootstrap bootstrap =
                 new Bootstrap().group(new NioEventLoopGroup()).channel(NioSocketChannel.class);
+
+        WordCount wordCount = new WordCount();
         bootstrap.handler(new ChannelInitializer<SocketChannel>() {
             @Override
             protected void initChannel(SocketChannel ch) {
-                ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(1024, 0, 4, 0, 4));
                 ch.pipeline().addLast(new LengthFieldPrepender(4));
                 ch.pipeline().addLast(new ByteArrayDecoder());
                 ch.pipeline().addLast(new ByteArrayEncoder());
                 ch.pipeline().addLast(new SimpleChannelInboundHandler<byte[]>() {
-                    ObjectMapper objectMapper = new ObjectMapper().configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+                    ObjectMapper objectMapper = new ObjectMapper().configure(SerializationFeature.FAIL_ON_EMPTY_BEANS
+                            , false);
 
                     @Override
                     public void channelActive(ChannelHandlerContext ctx) throws JsonProcessingException {
@@ -52,6 +57,20 @@ public class Worker {
                         Response response = objectMapper.readValue(msg, Response.class);
                         System.out.println("客户端接收响应" + response);
 
+                        if (response.isDone()) {
+                            ctx.close();
+                        } else if (response.getTaskObject() == null) {
+                            System.out.println("客户端未找到任务 休眠 2秒");
+                            Thread.sleep(2000);
+                        } else {
+                            List<KeyValue<String, Integer>> map = wordCount.map(response.getTaskObject().getFilepath());
+                            IntStream.range(0,response.getNReduce());
+
+                            for (KeyValue<String, Integer> stringIntegerKeyValue : map) {
+
+
+                            }
+                        }
                     }
                 });
             }
@@ -63,4 +82,5 @@ public class Worker {
             e.printStackTrace();
         }
     }
+
 }
