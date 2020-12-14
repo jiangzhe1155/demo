@@ -15,11 +15,15 @@ import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.bytes.ByteArrayDecoder;
 import io.netty.handler.codec.bytes.ByteArrayEncoder;
 import org.apache.commons.collections4.KeyValue;
+import org.apache.commons.io.FileUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author jz
@@ -57,6 +61,8 @@ public class Worker {
                         Response response = objectMapper.readValue(msg, Response.class);
                         System.out.println("客户端接收响应" + response);
 
+                        String base = "F:\\java project\\demo\\src\\main\\java\\org\\jz\\demo\\mapreduce\\data\\";
+
                         if (response.isDone()) {
                             ctx.close();
                         } else if (response.getTaskObject() == null) {
@@ -64,11 +70,29 @@ public class Worker {
                             Thread.sleep(2000);
                         } else {
                             List<KeyValue<String, Integer>> map = wordCount.map(response.getTaskObject().getFilepath());
-                            IntStream.range(0,response.getNReduce());
 
-                            for (KeyValue<String, Integer> stringIntegerKeyValue : map) {
+                            List<File> files = new ArrayList<>();
+                            int nReduce = response.getNReduce();
+                            for (int i = 0; i < nReduce; i++) {
+                                File file = new File("mr-" + response.getTaskObject().getIdx() + "-" + i);
+                                FileUtils.touch(file);
+                                files.add(file);
+                            }
 
+                            Map<Integer, List<String>> collect =
+                                    map.stream().collect(Collectors.groupingBy(a -> a.getKey().hashCode() % nReduce,
+                                            Collectors.mapping(a -> {
+                                                try {
+                                                    return objectMapper.writeValueAsString(a);
+                                                } catch (JsonProcessingException e) {
+                                                    e.printStackTrace();
+                                                }
+                                                return null;
+                                            }, Collectors.toList())));
 
+                            for (Map.Entry<Integer, List<String>> integerListEntry : collect.entrySet()) {
+                                File file = files.get(integerListEntry.getKey());
+                                FileUtils.writeLines(file, integerListEntry.getValue());
                             }
                         }
                     }
